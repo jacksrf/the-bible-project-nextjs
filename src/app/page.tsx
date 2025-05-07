@@ -79,14 +79,15 @@ export default function Home() {
     lenisRef.current.on('scroll', ScrollTrigger.update);
 
     // Create a proxy for Lenis scroll
-    gsap.ticker.add((time) => {
+    const rafCallback = (time: number) => {
       lenisRef.current?.raf(time * 1000);
-    });
+    };
+    gsap.ticker.add(rafCallback);
 
     // Clean up function
     return () => {
       lenisRef.current?.destroy();
-      gsap.ticker.remove(lenisRef.current?.raf);
+      gsap.ticker.remove(rafCallback);
       ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
   }, []);
