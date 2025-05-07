@@ -8,6 +8,8 @@ import type { BibleBook } from '@/types/bible-book'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
 import ScrollToPlugin from 'gsap/ScrollToPlugin'
+import { useAnimation } from './context/AnimationContext'
+import type { Callback } from 'gsap'
 
 // Add type declarations for GSAP
 declare global {
@@ -24,28 +26,33 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const lenisRef = useRef<Lenis | null>(null);
+  const { animateToProject } = useAnimation();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const tickerRef = useRef<Callback | null>(null);
 
   useEffect(() => {
     const fetchBooks = async () => {
-      if (!selectedVersion) return;
-      
-      setLoading(true);
-      setError(null);
-      
+      if (!selectedVersion) {
+        setError('Please select a Bible version first');
+        setLoading(false);
+        return;
+      }
+
       try {
-        console.log('Fetching books for version:', selectedVersion.value);
+        setLoading(true);
+        setError(null);
+        
         const response = await fetch(`/api/bible/${selectedVersion.value}/books`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch books');
         }
-        
+
         const data = await response.json();
-        console.log('Received books:', data);
         setBooks(data);
       } catch (err) {
         console.error('Error fetching books:', err);
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        setError(err instanceof Error ? err.message : 'Failed to fetch books');
       } finally {
         setLoading(false);
       }
@@ -167,28 +174,121 @@ export default function Home() {
     };
   }, [loading, error, books]);
 
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    // Create fade-in animation
+    gsap.fromTo(
+      containerRef.current,
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
+    );
+
+    // Add ticker for smooth animations
+    const tickerCallback: Callback = (time: number) => {
+      if (containerRef.current) {
+        containerRef.current.style.transform = `translateY(${Math.sin(time * 0.001) * 5}px)`;
+      }
+    };
+
+    tickerRef.current = tickerCallback;
+    gsap.ticker.add(tickerCallback);
+
+    return () => {
+      if (tickerRef.current) {
+        gsap.ticker.remove(tickerRef.current);
+      }
+    };
+  }, []);
+
+  const handleProjectClick = (e: React.MouseEvent<HTMLDivElement>, projectId: string) => {
+    const clickedElement = e.currentTarget;
+    animateToProject(projectId, clickedElement);
+  };
+
+  if (!selectedVersion) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-yellow-700">
+                  Please select a Bible version to view the books.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-red-500 p-4 rounded-lg bg-red-50 border border-red-200">
-          <h2 className="text-lg font-semibold mb-2">Error Loading Books</h2>
-          <p>{error}</p>
+      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-red-50 border-l-4 border-red-400 p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <main className="relative">
-      <BibleProject books={books} />
-    </main>
+    <div ref={containerRef} className="mwg_effect038">
+      <div className="pin-height">
+        <div className="books_container">
+          {books.map((book) => (
+            <div
+              key={book.id}
+              className="project"
+              onClick={(e) => handleProjectClick(e, book.id)}
+            >
+              <div className="datas">
+                <h1 className="label">{book.name}</h1>
+                <p className="designer">{book.testament === "OT" ? "Old Testament" : "New Testament"}</p>
+              </div>
+              <div className="media-container">
+                <div className="media cursor-pointer">
+                  <img
+                    src={`/medias/${book.image.toLowerCase()}`}
+                    alt={book.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   )
 }
