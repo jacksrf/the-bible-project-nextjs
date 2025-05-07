@@ -121,7 +121,8 @@
 
 header {
     border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-    display: flex;
+    display: flex
+;
     align-items: center;
     justify-content: space-between;
     padding: 0px 25px;
@@ -131,6 +132,7 @@ header {
     width: 100vw;
     background-color: white;
     height: 60px;
+    z-index: 1000;
 }
 
 select {
@@ -151,14 +153,19 @@ header .container {
 .mwg_effect038 .pin-height {
   height: 300vh;
   overflow: hidden;
+  position: relative;
 }
+
 .mwg_effect038 .books_container {
-    white-space: nowrap;
-    width: max-content;
-    height: calc(100vh - 60px);
-    display: flex;
-    margin-top: 60px;
+  white-space: nowrap;
+  width: max-content;
+  height: calc(100vh - 60px);
+  display: flex;
+  margin-top: 60px;
+  position: relative;
+  will-change: transform;
 }
+
 .project {
   position: relative;
   height: 100%;
