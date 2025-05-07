@@ -1,0 +1,372 @@
+@import "tailwindcss/preflight";
+@tailwind utilities;
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 222.2 47.4% 11.2%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 222.2 84% 4.9%;
+  --radius: 0.5rem;
+}
+
+@theme dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 210 40% 98%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Font is loaded via Next.js font system */
+
+/* NORMALIZE */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+/* NORMALIZE */
+
+.h-\[60px\] {
+    height: 60px;
+}
+
+header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 25px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    background-color: white;
+    height: 60px;
+}
+
+select {
+    appearance: auto;
+    border: 1px solid black;
+    border-radius: 6px;
+    padding: 4px 10px;
+}
+
+header .container {
+    display: flex
+;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.mwg_effect038 .pin-height {
+  height: 300vh;
+  overflow: hidden;
+}
+.mwg_effect038 .books_container {
+    white-space: nowrap;
+    width: max-content;
+    height: calc(100vh - 60px);
+    display: flex;
+    margin-top: 60px;
+}
+.project {
+  position: relative;
+  height: 100%;
+  min-width: 4vw;
+  display: flex;
+  width: unset;
+  left: 0;
+  bottom: 0;
+}
+.project:not(:last-child) {
+  border-right: 1px solid rgba(0, 0, 0, 0.3);
+}
+.project:not(.on) {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+.project .designer {
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 1.1vw;
+}
+
+.project:not(.on) .designer,
+.project:not(.on) .media {
+  display: none;
+}
+
+.datas h1 {
+    font-size: unset;
+    font-weight: unset;
+}
+
+.pin-height.single-book {
+    height: unset;
+    min-height: calc(100vh - 60px);
+}
+
+.datas {
+    position: absolute;
+    bottom: 1.5vw;
+    left: 2vw;
+    font: 500 normal 2vw / 2.6vw "Inter", sans-serif;
+    letter-spacing: -0.03em;
+    transform: rotate(-90deg);
+    transform-origin: 0 50%;
+    width: calc(100vh - 10vw);
+    display: flex;
+    justify-content: space-between;
+}
+
+a.block {
+    color: inherit;
+}
+
+.media-container {
+  height: calc(100% - 2.6vw);
+  margin: 0vw;
+  display: flex;
+  justify-content: center;
+}
+
+.project.on .media-container {
+    height: calc(100% - 2.6vw);
+    margin: 1.3vw 1.3vw 0 4vw;
+    display: flex;
+    justify-content: center;
+}
+
+.media {
+    height: 100%;
+    width: 25vw;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 0.6vw;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.media.cursor-pointer img {
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+    height: 100%;
+}
+
+p.label:hover {
+  color: rgba(0, 0, 0, 1);
+  transition: all 300ms;
+  -webkit-transition: all 300ms;
+  transform: translateX(10px);
+  cursor: pointer;
+}
+
+header nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.project.on.book-page .media-container {
+    height: calc(100% - 2.6vw);
+    margin: 1.3vw 1.3vw 0 4vw;
+    display: flex;
+    justify-content: center;
+    width: calc(100vw - 5.3vw);
+}
+
+.book-content {
+    width: calc(100% - 25vw);
+    padding: 30px 3vw 30px 5vw;
+    box-sizing: border-box;
+    overflow: scroll;
+}
+
+.book-content-inner {
+    width: 100%;
+    padding-bottom: 50vh;
+    float: left;
+}
+
+.book-content-inner div div p:first-child {
+    display: none;
+}
+
+.book-content-inner div div p:nth-child(2) {
+    display: none;
+}
+
+.book-content p {
+    float: left;
+    width: 100%;
+    white-space: normal;
+    margin-bottom: 20px !important;
+}
+
+@media (max-width: 768px) {
+  .mwg_effect038 .pin-height {
+    height: auto;
+  }
+
+  .mwg_effect038 .books_container {
+    height: auto;
+    white-space: initial;
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .mwg_effect038 .project:not(:first-child) {
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  .mwg_effect038 .project {
+    border-right: 0 !important;
+  }
+
+  .mwg_effect038 .project:not(.on) {
+    color: #121212;
+  }
+  .mwg_effect038 .project:not(.on) .year,
+  .mwg_effect038 .project:not(.on) .media {
+    display: block;
+  }
+
+  .mwg_effect038 .datas {
+    position: relative;
+    transform: none;
+    left: auto;
+    margin: 30px 15px 15px;
+    font-size: 28px;
+    line-height: 30px;
+    width: auto;
+    display: block;
+  }
+  .mwg_effect038 .media-container {
+    margin: 15px;
+    width: calc(100% - 30px);
+    height: auto;
+    aspect-ratio: 0.8;
+  }
+  .mwg_effect038 .media {
+    margin: 15px;
+    width: calc(100% - 30px);
+    height: auto;
+    aspect-ratio: 0.8;
+    object-position: top;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles for the Bible version selector */
+.bible-version-selector {
+  @apply inline-flex items-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all;
+  @apply disabled:pointer-events-none disabled:opacity-50;
+  @apply [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4;
+  @apply shrink-0 [&_svg]:shrink-0;
+  @apply outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px];
+  @apply aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40;
+  @apply aria-invalid:border-destructive;
+  @apply border bg-background shadow-xs;
+  @apply hover:bg-accent hover:text-accent-foreground;
+  @apply dark:bg-input/30 dark:border-input dark:hover:bg-input/50;
+  @apply h-9 px-4 py-2 has-[>svg]:px-3 w-[200px] justify-between;
+}
