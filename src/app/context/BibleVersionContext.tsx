@@ -32,13 +32,9 @@ export function BibleVersionProvider({ children }: { children: React.ReactNode }
         console.log('Received versions:', versions);
         setBibleVersions(versions);
         
-        // Set KJV as the default version
-        const kjv = versions.find(v => v.value === 'KJV');
-        if (kjv) {
-          console.log('Setting KJV as default version');
-          setSelectedVersion(kjv);
-        } else if (versions.length > 0) {
-          console.log('KJV not found, setting first version as default:', versions[0]);
+        // Set the first version as selected if none is selected
+        if (!selectedVersion && versions.length > 0) {
+          console.log('Setting initial version:', versions[0]);
           setSelectedVersion(versions[0]);
         }
       } catch (err) {
