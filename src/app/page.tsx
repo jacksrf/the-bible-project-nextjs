@@ -14,6 +14,7 @@ export default function Home() {
   const [books, setBooks] = useState<BibleBook[]>([])
   const [imagesLoaded, setImagesLoaded] = useState(false)
   const router = useRouter()
+  const gsapInitialized = useRef(false)
 
   // Fetch books data
   useEffect(() => {
@@ -62,20 +63,29 @@ export default function Home() {
     }
   }, [books])
 
+  // Initialize GSAP
+  useEffect(() => {
+    if (!gsapInitialized.current) {
+      gsapInitialized.current = true
+    }
+  }, [])
+
   // Setup animations only after books and images are loaded
   useEffect(() => {
-    if (!cardRef.current || !mediasRef.current || !imagesLoaded) return
+    if (!cardRef.current || !mediasRef.current || !imagesLoaded || !gsapInitialized.current) return
 
     const card = cardRef.current
     const medias = mediasRef.current
     const nbMedias = medias.querySelectorAll('.media').length
     if (nbMedias === 0) return
 
+    // Initialize GSAP animations
     const xTo = gsap.quickTo(card, "x", {duration: 1, ease: "power4"})
     const yTo = gsap.quickTo(card, "y", {duration: 1, ease: "power4"})
     const rotationTo = gsap.quickTo(card, "rotation", {duration: 1, ease: "power4"})
     const xToMedias = gsap.quickTo(medias, "xPercent", {duration: 0.6, ease: "power2"})
     const yToMedias = gsap.quickTo(medias, "yPercent", {duration: 0.7, ease: "power2"})
+
     const W = window.innerWidth
     const H = window.innerHeight
 
@@ -86,8 +96,8 @@ export default function Home() {
     }
 
     let isMoving: NodeJS.Timeout
-    let oldPosX = 0
-    let oldPosY = 0
+    let oldPosX = W / 2
+    let oldPosY = H / 2
     let incr = 0
     let index = 0
 
@@ -95,15 +105,15 @@ export default function Home() {
       const posX = e.clientX
       const posY = e.clientY
 
-      const valueX = (posX - oldPosX)/2
-      const valueY = (posY - oldPosY)/2
+      const valueX = (posX - oldPosX) / 2
+      const valueY = (posY - oldPosY) / 2
 
       const clampValueX = gsap.utils.clamp(-8, 8, valueX)
       const clampValueY = gsap.utils.clamp(-8, 8, valueY)
 
       rotationTo((posX - oldPosX) / 4)
-      xTo(posX - W/2)
-      yTo(posY - H/2 + window.scrollY)
+      xTo(posX - W / 2)
+      yTo(posY - H / 2 + window.scrollY)
 
       xToMedias(-clampValueX)
       yToMedias(-clampValueY)
@@ -112,7 +122,7 @@ export default function Home() {
       oldPosY = posY
 
       incr += Math.abs(valueX) + Math.abs(valueY)
-      if(incr > 300) {
+      if (incr > 300) {
         incr = 0
 
         const activeMedia = medias.querySelector('.media.on')
@@ -136,13 +146,20 @@ export default function Home() {
       }, 66)
     }
 
+    // Add mouse move listener
     window.addEventListener("mousemove", handleMouseMove)
+
+    // Set initial position
+    gsap.set(card, {
+      x: W / 2,
+      y: H / 2
+    })
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove)
       window.clearTimeout(isMoving)
     }
-  }, [books, imagesLoaded]) // Add imagesLoaded as a dependency
+  }, [books, imagesLoaded])
 
   const handleSectionClick = () => {
     if (!sectionRef.current) return

@@ -387,6 +387,7 @@ header nav {
     position: relative;
     height: 100vh;
     overflow: hidden;
+    cursor: none;
 }
 .mwg_effect002 .card {
     width: 20vw;
