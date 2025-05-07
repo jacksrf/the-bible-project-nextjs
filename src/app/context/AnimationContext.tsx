@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 declare global {
   interface Window {
@@ -25,7 +26,7 @@ export default function AnimationProvider({ children }: { children: React.ReactN
   useEffect(() => {
     // Initialize GSAP
     if (typeof window !== 'undefined') {
-      gsap.registerPlugin(gsap.ScrollTrigger);
+      gsap.registerPlugin(ScrollTrigger);
     }
 
     // Clean up animated element after navigation
