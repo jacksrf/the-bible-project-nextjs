@@ -2,77 +2,175 @@
 
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 import { useBibleVersion } from './context/BibleVersionContext'
 import type { BibleBook } from '@/types/bible-book'
 import { useRouter } from 'next/navigation'
+import { bibleBooks } from '@/data/bible-books'
 
 export default function Home() {
   const cardRef = useRef<HTMLDivElement>(null)
   const mediasRef = useRef<HTMLDivElement>(null)
   const sectionRef = useRef<HTMLElement>(null)
+  const progressCircleRef = useRef<SVGCircleElement>(null)
+  const progressNumberRef = useRef<HTMLSpanElement>(null)
   const { selectedVersion } = useBibleVersion()
-  const [books, setBooks] = useState<BibleBook[]>([])
+  const books = bibleBooks // Use the books directly since they're static
   const [imagesLoaded, setImagesLoaded] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [loadingProgress, setLoadingProgress] = useState(0)
+  const [showContent, setShowContent] = useState(false)
+  const [fadeOutLoader, setFadeOutLoader] = useState(false)
+  const [dataLoaded, setDataLoaded] = useState(true) // Set to true since we're using hardcoded data
   const router = useRouter()
   const gsapInitialized = useRef(false)
 
-  // Fetch books data
+  // Preload images
   useEffect(() => {
-    const fetchBooks = async () => {
-      if (!selectedVersion) return
+    if (!dataLoaded || books.length === 0) return
 
-      try {
-        const response = await fetch(`/api/bible/${selectedVersion.value}/books`)
-        if (!response.ok) throw new Error('Failed to fetch books')
-        const data = await response.json()
-        setBooks(data)
-      } catch (err) {
-        console.error('Error fetching books:', err)
-      }
-    }
-
-    fetchBooks()
-  }, [selectedVersion])
-
-  // Handle image loading
-  useEffect(() => {
-    if (books.length === 0) return
-
-    const images = document.querySelectorAll('.media')
+    console.log('Starting image preload...')
     let loadedCount = 0
+    const totalImages = books.length
+    let isEffectActive = true
 
     const handleImageLoad = () => {
+      if (!isEffectActive) return
+      
       loadedCount++
-      if (loadedCount === images.length) {
-        setImagesLoaded(true)
+      console.log(`Image preloaded ${loadedCount}/${totalImages}`)
+      if (loadedCount === totalImages) {
+        console.log('All images preloaded')
+        setImagesLoaded(prev => {
+          if (!prev) {
+            console.log('Setting imagesLoaded to true')
+            return true
+          }
+          return prev
+        })
       }
     }
 
-    images.forEach(img => {
-      if ((img as HTMLImageElement).complete) {
+    books.forEach(book => {
+      const img = new Image()
+      img.src = `/medias/${book.image.toLowerCase()}`
+      if (img.complete) {
         handleImageLoad()
       } else {
-        img.addEventListener('load', handleImageLoad)
+        img.onload = handleImageLoad
       }
     })
 
     return () => {
-      images.forEach(img => {
-        img.removeEventListener('load', handleImageLoad)
+      isEffectActive = false
+      books.forEach(book => {
+        const img = new Image()
+        img.onload = null
       })
     }
-  }, [books])
+  }, [books, dataLoaded])
 
   // Initialize GSAP
   useEffect(() => {
     if (!gsapInitialized.current) {
+      gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
       gsapInitialized.current = true
     }
   }, [])
 
+  // Set initial card position
+  useEffect(() => {
+    if (!cardRef.current || !showContent) return
+
+    const card = cardRef.current
+    const W = window.innerWidth
+    const H = window.innerHeight
+
+    // Set initial position to center
+    gsap.set(card, {
+      x: W / 2,
+      y: H / 2
+    })
+  }, [showContent])
+
+  // Animate loading progress
+  useEffect(() => {
+    if (!isLoading || !progressCircleRef.current || !progressNumberRef.current || !dataLoaded || !imagesLoaded) return
+
+    console.log('Starting circle animation')
+    let isAnimating = true
+    const duration = 2.5 // 2.5 seconds total
+    const circle = progressCircleRef.current
+    const number = progressNumberRef.current
+    const circumference = 2 * Math.PI * 45 // 2πr where r=45
+
+    // Reset states before starting animation
+    setLoadingProgress(0)
+    gsap.set(circle, {
+      strokeDasharray: circumference,
+      strokeDashoffset: circumference
+    })
+    gsap.set(number, {
+      textContent: '0'
+    })
+
+    // Create a timeline for synchronized animations
+    const tl = gsap.timeline({
+      onComplete: () => {
+        if (isAnimating) {
+          console.log('Circle animation complete')
+          setFadeOutLoader(true)
+          setTimeout(() => {
+            if (isAnimating) {
+              setIsLoading(false)
+              setShowContent(true)
+            }
+          }, 500)
+        }
+      }
+    })
+
+    // Animate both the circle and number together
+    tl.to([circle, number], {
+      duration: duration,
+      ease: "none",
+      onUpdate: function() {
+        const progress = this.progress() * 100
+        const roundedProgress = Math.round(progress)
+        setLoadingProgress(roundedProgress)
+        gsap.set(circle, {
+          strokeDashoffset: circumference - (circumference * progress) / 100
+        })
+        gsap.set(number, {
+          textContent: roundedProgress
+        })
+      }
+    })
+
+    return () => {
+      isAnimating = false
+      tl.kill()
+    }
+  }, [isLoading, dataLoaded, imagesLoaded])
+
+  // Animate progress circle
+  useEffect(() => {
+    if (!progressCircleRef.current) return
+
+    const circle = progressCircleRef.current
+    const circumference = 2 * Math.PI * 45 // 2πr where r=45
+
+    gsap.to(circle, {
+      strokeDashoffset: circumference - (circumference * loadingProgress) / 100,
+      duration: 0.5,
+      ease: "power2.out"
+    })
+  }, [loadingProgress])
+
   // Setup animations only after books and images are loaded
   useEffect(() => {
-    if (!cardRef.current || !mediasRef.current || !imagesLoaded || !gsapInitialized.current) return
+    if (!cardRef.current || !mediasRef.current || !imagesLoaded || !gsapInitialized.current || !showContent) return
 
     const card = cardRef.current
     const medias = mediasRef.current
@@ -146,20 +244,31 @@ export default function Home() {
       }, 66)
     }
 
-    // Add mouse move listener
-    window.addEventListener("mousemove", handleMouseMove)
-
-    // Set initial position
-    gsap.set(card, {
-      x: W / 2,
-      y: H / 2
-    })
+    // Add mouse move listener only after fade in animation is complete
+    const fadeInAnimation = gsap.fromTo(sectionRef.current, 
+      { 
+        opacity: 0,
+        y: 20
+      },
+      { 
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power2.out",
+        onComplete: () => {
+          // Add mouse move listener after fade in is complete
+          window.addEventListener("mousemove", handleMouseMove)
+        }
+      }
+    )
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove)
       window.clearTimeout(isMoving)
+      // Kill all GSAP animations
+      gsap.killTweensOf([card, medias])
     }
-  }, [books, imagesLoaded])
+  }, [books, imagesLoaded, showContent])
 
   const handleSectionClick = () => {
     if (!sectionRef.current) return
@@ -178,12 +287,43 @@ export default function Home() {
     })
   }
 
+  if (isLoading) {
+    return (
+      <div className={`min-h-screen flex items-center justify-center bg-gray-50 transition-opacity duration-500 ${fadeOutLoader ? 'opacity-0' : 'opacity-100'}`}>
+        <div className="w-[100px] h-[100px]">
+          <div className="progress-circle">
+            <div className="progress-circle__circle">
+              <svg className="progress-circle__svg" viewBox="0 0 100 100">
+                <circle className="progress-circle__circle-bg" cx="50" cy="50" r="45" />
+                <circle 
+                  ref={progressCircleRef}
+                  className="progress-circle__circle-fill" 
+                  cx="50" 
+                  cy="50" 
+                  r="45"
+                  style={{
+                    strokeDasharray: '283',
+                    strokeDashoffset: '283'
+                  }}
+                />
+              </svg>
+              <div className="progress-circle__text">
+                <span ref={progressNumberRef} className="progress-circle__text-value">0</span>
+                <span className="progress-circle__text-percent">%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      {/* <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"> */}
         <section 
           ref={sectionRef}
-          className="mwg_effect002 cursor-pointer" 
+          className="mwg_effect002 cursor-pointer opacity-0" 
           onClick={handleSectionClick}
         >
           <p className="text">Explore the books of the Bible in a new way</p>
@@ -201,7 +341,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-      </div>
+      {/* </div> */}
     </div>
   )
 }

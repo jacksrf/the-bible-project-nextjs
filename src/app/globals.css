@@ -377,17 +377,98 @@ header nav {
   @apply h-9 px-4 py-2 has-[>svg]:px-3 w-[200px] justify-between;
 }
 
+.progress-circle {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 
+.w-\[100px\].h-\[100px\] {
+    width: 100px;
+    height: 100px;
+}
 
+.items-center {
+    align-items: center;
+}
 
+.min-h-screen {
+    height: 100%;
+}
 
+.flex {
+    display: flex;
+}
 
+.justify-center {
+    justify-content: center;
+}
+
+.w-full {
+    width: 100vw;
+}
+
+.h-full {
+    height: 100vh;
+}
+
+.progress-circle__circle {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.progress-circle__svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.progress-circle__circle-bg {
+  fill: none;
+  stroke: #e5e7eb;
+  stroke-width: 8;
+}
+
+.progress-circle__circle-fill {
+  fill: none;
+  stroke: #111827;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.3s ease;
+  transform-origin: center;
+}
+
+.progress-circle__text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: baseline;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.progress-circle__text-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.progress-circle__text-percent {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+  margin-left: 2px;
+}
 
 .mwg_effect002 {
     position: relative;
     height: 100vh;
     overflow: hidden;
     cursor: none;
+    width: 100vw;
 }
 .mwg_effect002 .card {
     width: 20vw;
