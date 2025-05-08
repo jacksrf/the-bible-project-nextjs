@@ -558,16 +558,18 @@ div#smooth-wrapper {
     cursor: none;
     width: 100vw;
 }
+
 .mwg_effect002 .card {
     width: 20vw;
     aspect-ratio: 0.8;
     border-radius: 2%;
     overflow: hidden;
     position: absolute;
-    top: 50%;
+    top: calc(50% - 12vw);
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
 }
+
 .mwg_effect002 .card .medias {
     width: 100%;
     height: 100%;
