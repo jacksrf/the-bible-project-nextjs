@@ -353,7 +353,7 @@ export default function Home() {
           onClick={handleSectionClick}
         >
           <p className="text">Explore the books of the Bible in a new way</p>
-          <p className="shop">The Bible Project</p>
+          <p className="shop">The Lumen Bible</p>
           <div ref={cardRef} className="card">
             <div ref={mediasRef} className="medias">
               {books.map((book, index) => (
