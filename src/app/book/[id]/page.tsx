@@ -104,6 +104,12 @@ export default function BookPage({ params }: BookPageProps) {
     return () => {
       isMounted = false;
       document.body.classList.remove('book-page-active');
+      
+      // Remove .project.on element from body
+      const projectOn = document.querySelector('.project.on');
+      if (projectOn && projectOn.parentElement === document.body) {
+        document.body.removeChild(projectOn);
+      }
     };
   }, [bookName]); // Only depend on bookName
 
