@@ -330,10 +330,8 @@ div#smooth-wrapper {
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
-    flex-direction: column;
     height: 82vh;
     margin-left: 20px;
-    /* overflow: auto; */
     position: fixed;
     right: 1.5vw;
     top: 6.6vw;
@@ -342,6 +340,7 @@ div#smooth-wrapper {
     border: 1px solid rgba(0, 0, 0, .3);
     border-radius: 7px;
     opacity: 0;
+    width: 32px;
 }
 
 .book-content-inner {
@@ -366,8 +365,9 @@ div#smooth-wrapper {
     margin-bottom: 20px !important;
 }
 
-.chapter-nav > div {
+.chapter-nav>div {
     position: relative;
+    width: 100%;
 }
 
 .chapter_marker {
