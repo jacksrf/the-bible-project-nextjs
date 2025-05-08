@@ -93,8 +93,8 @@ export default function Home() {
 
     // Set initial position to center, accounting for card dimensions
     gsap.set(card, {
-      x: 0,
-      y: 0
+      x: '-50%',
+      y: '0%'
     })
   }, [showContent])
 
