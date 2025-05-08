@@ -46,13 +46,8 @@ export default function BookPage({ params }: BookPageProps) {
   useEffect(() => {
     let isMounted = true;
 
-    // Safely remove any existing project elements
-    // const projectElements = document.querySelectorAll('.project');
-    // projectElements.forEach(element => {
-    //   if (element.parentElement) {
-    //     element.parentElement.removeChild(element);
-    //   }
-    // });
+    // Add class to body
+    document.body.classList.add('book-page-active');
 
     const fetchBookContent = async () => {
       try {
@@ -108,6 +103,7 @@ export default function BookPage({ params }: BookPageProps) {
     // Cleanup function
     return () => {
       isMounted = false;
+      document.body.classList.remove('book-page-active');
     };
   }, [bookName]); // Only depend on bookName
 
