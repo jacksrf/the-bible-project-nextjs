@@ -308,7 +308,7 @@ body.book-page-active > .project.on {
 
 .book-content {
     width: calc(100% - 25vw);
-    padding: 0px 3vw 0px 5vw;
+    padding: 0px 6vw 0px 5vw;
     box-sizing: border-box;
     overflow: scroll;
     margin-top: -1.3vw;
