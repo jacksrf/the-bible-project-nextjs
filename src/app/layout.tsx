@@ -18,8 +18,8 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "Bible Project",
-  description: "Interactive Bible Project",
+  title: "The Lumen Bible",
+  description: "Interactive Minimal Design Bible Project",
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Bible Project'
+    title: 'The Lumen Bible'
   }
 }
 
