@@ -31,6 +31,14 @@ export default function Home() {
   const tickerRef = useRef<Callback | null>(null);
 
   useEffect(() => {
+
+    const projectElements = document.body.querySelectorAll('.project');
+    projectElements.forEach(element => {
+      if (element.parentElement === document.body) {
+        document.body.removeChild(element);
+      }
+    });
+
     const fetchBooks = async () => {
       if (!selectedVersion) {
         setError('Please select a Bible version first');
@@ -95,6 +103,10 @@ export default function Home() {
   useEffect(() => {
     if (loading || error || books.length === 0) return;
 
+    // Kill any existing ScrollTrigger instances
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    gsap.killTweensOf(".mwg_effect038 .books_container");
+
     // Initialize animations after component mount and books are loaded
     const mm = gsap.matchMedia();
     
@@ -102,7 +114,10 @@ export default function Home() {
       const projects = document.querySelectorAll(".mwg_effect038 .project");
       if (!projects.length) return;
 
+      // Reset any existing 'on' classes
+      projects.forEach(project => project.classList.remove('on'));
       projects[0].classList.add("on");
+      
       const numProjects = projects.length;
       let currentProject = projects[0];
 
@@ -118,34 +133,6 @@ export default function Home() {
 
       const pinHeight = booksContainer.clientHeight * 2;
 
-      // Add click handlers to projects
-      projects.forEach((project, index) => {
-        const label = project.querySelector("p.label");
-        if (!label) return;
-
-        label.addEventListener("click", () => {
-          const scrollProgress = pinHeight / numProjects;
-          const scrollPosition = scrollProgress * index + scrollProgress / 2;
-
-          const currentScroll = window.scrollY;
-          const currentProgress = currentScroll / pinHeight;
-          const currentClosestIndex = Math.round(currentProgress * (numProjects - 1));
-
-          let duration;
-          if (currentClosestIndex > index) {
-            duration = (2 / numProjects) * (currentClosestIndex - index);
-          } else {
-            duration = (2 / numProjects) * (index - currentClosestIndex);
-          }
-
-          // Use Lenis for smooth scrolling
-          lenisRef.current?.scrollTo(scrollPosition, {
-            duration: duration * 1000,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t))
-          });
-        });
-      });
-
       // Create the horizontal scroll animation
       gsap.to(container, {
         x: -dist,
@@ -155,7 +142,6 @@ export default function Home() {
           pin: container,
           start: "top top=+80px",
           end: "bottom bottom",
-
           scrub: 1,
           onUpdate: (self) => {
             const closestIndex = Math.round(self.progress * (numProjects - 1));
@@ -173,8 +159,31 @@ export default function Home() {
 
     return () => {
       mm.revert();
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      gsap.killTweensOf(".mwg_effect038 .books_container");
     };
   }, [loading, error, books]);
+
+  // Add a separate effect to handle window focus/blur
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        // Force a re-render to reinitialize GSAP
+        setLoading(true);
+        setTimeout(() => {
+          setLoading(false);
+        }, 100);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleVisibilityChange);
+    };
+  }, []);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -203,9 +212,23 @@ export default function Home() {
     };
   }, []);
 
-  const handleProjectClick = (e: React.MouseEvent<HTMLDivElement>, projectId: string) => {
+  const handleProjectClick = (e: React.MouseEvent<HTMLDivElement>, projectId: string, index: number) => {
     const clickedElement = e.currentTarget;
-    animateToProject(projectId, clickedElement);
+    console.log('Has "on" class:', clickedElement.classList.contains('on'));
+    
+    if (clickedElement.classList.contains('on')) {
+      animateToProject(projectId.replace(/\s+/g, '-'), clickedElement);
+    } else {
+      // remove class on from element that has on class
+      const activeElement = document.querySelector('.project.on');
+      if (activeElement) {
+        activeElement.classList.remove('on');
+      }
+      clickedElement.classList.add('on');
+      setTimeout(() => {
+        animateToProject(projectId.replace(/\s+/g, '-'), clickedElement);
+      }, 100);
+    }
   };
 
   if (!selectedVersion) {
@@ -268,11 +291,11 @@ export default function Home() {
     <div ref={containerRef} className="mwg_effect038">
       <div className="pin-height">
         <div className="books_container">
-          {books.map((book) => (
+          {books.map((book, index) => (
             <div
               key={book.name}
               className="project"
-              onClick={(e) => handleProjectClick(e, book.name)}
+              onClick={(e) => handleProjectClick(e, book.name, index)}
             >
               <div className="datas">
                 <h1 className="label">{book.name}</h1>

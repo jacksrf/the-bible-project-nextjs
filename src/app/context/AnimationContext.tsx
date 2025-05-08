@@ -67,7 +67,7 @@ export default function AnimationProvider({ children }: { children: React.ReactN
     const clone = clickedElement.cloneNode(true) as HTMLElement;
     clone.style.opacity = '0';
     clone.style.visibility = 'hidden';
-    clickedElement.parentNode?.insertBefore(clone, clickedElement);
+    // clickedElement.parentNode?.insertBefore(clone, clickedElement);
 
     // Move the element to the body but keep its original class
     document.body.appendChild(clickedElement);
@@ -78,8 +78,8 @@ export default function AnimationProvider({ children }: { children: React.ReactN
     clickedElement.style.height = `${projectRect.height}px`;
     
     // Store the element globally so it persists during route change
-    window.__ANIMATED_ELEMENT__ = clickedElement;
-    animatedElementRef.current = clickedElement;
+    // window.__ANIMATED_ELEMENT__ = clickedElement;
+    // animatedElementRef.current = clickedElement;
 
     // Create a timeline for the animation
     const tl = gsap.timeline({

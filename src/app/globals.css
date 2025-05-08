@@ -181,9 +181,9 @@ header .container {
   color: rgba(0, 0, 0, 0.3);
 }
 
-.project .designer {
-  color: rgba(0, 0, 0, 0.7);
-  font-size: 1.1vw;
+.designer {
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 1.1vw;
 }
 
 .project:not(.on) .designer,
@@ -264,7 +264,17 @@ header nav {
     width: 100%;
 }
 
-.project.on.book-page .media-container {
+.book-page {
+  position: relative;
+  height: 100%;
+  min-width: 4vw;
+  display: flex;
+  width: unset;
+  left: 0;
+  bottom: 0;
+}
+
+.book-page .media-container {
     height: calc(100% - 2.6vw);
     margin: 1.3vw 1.3vw 0 4vw;
     display: flex;
@@ -272,17 +282,44 @@ header nav {
     width: calc(100vw - 5.3vw);
 }
 
+.book-page-container {
+    width: 100%;
+    padding-top: 60px;
+    box-sizing: border-box;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+/* .book-page .datas, .book-page .media {
+    opacity: 0;
+} */
+
+body.book-page-active > .project.on {
+    z-index: -1;
+}
+
+.prose {
+    opacity: 0;
+    /* transition: opacity 1000ms;
+    -webkit-transition: opacity 1000ms; */
+}
+
 .book-content {
     width: calc(100% - 25vw);
-    padding: 30px 3vw 30px 5vw;
+    padding: 0px 3vw 0px 5vw;
     box-sizing: border-box;
     overflow: scroll;
+    margin-top: -1.3vw;
+    height: calc(100% + 2.6vw);
 }
 
 .book-content-inner {
     width: 100%;
     padding-bottom: 50vh;
     float: left;
+    padding-top: 2.3vw;
 }
 
 .book-content-inner div div p:first-child {

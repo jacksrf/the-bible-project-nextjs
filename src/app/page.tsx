@@ -270,9 +270,35 @@ export default function Home() {
     }
   }, [books, imagesLoaded, showContent])
 
-  const handleSectionClick = () => {
+  const handleSectionClick = (e: React.MouseEvent) => {
     if (!sectionRef.current) return
 
+    // Check if we clicked on a project
+    const target = e.target as HTMLElement
+    const project = target.closest('.project')
+    if (project && !project.classList.contains('on')) {
+      // Scroll to the project first
+      project.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      
+      // Wait for scroll to complete before starting the animation
+      setTimeout(() => {
+        const tl = gsap.timeline({
+          onComplete: () => {
+            router.push('/books')
+          }
+        })
+
+        tl.to(sectionRef.current, {
+          opacity: 0,
+          y: -50,
+          duration: 0.5,
+          ease: "power2.inOut"
+        })
+      }, 1000) // Wait for scroll animation to complete
+      return
+    }
+
+    // If we clicked on the active project or the section, proceed with normal animation
     const tl = gsap.timeline({
       onComplete: () => {
         router.push('/books')
