@@ -37,10 +37,25 @@ export default function BookPage({ params }: BookPageProps) {
   );
   
   const containerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const lenisRef = useRef<Lenis | null>(null);
   const { selectedVersion } = useBibleVersion();
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentChapter, setCurrentChapter] = useState(1);
+
+  // Handle chapter navigation
+  const scrollToChapter = (chapterNumber: number) => {
+    if (!contentRef.current || !project) return;
+    
+    const chapterElements = contentRef.current.querySelectorAll('.prose > div');
+    const targetElement = chapterElements[chapterNumber - 1] as HTMLElement;
+    if (targetElement) {
+      targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setCurrentChapter(chapterNumber);
+    }
+  };
 
   // Combined effect for initial setup and content fetching
   useEffect(() => {
@@ -134,8 +149,8 @@ export default function BookPage({ params }: BookPageProps) {
               priority
             />
           </div>
-          <div className="book-content">
-            <div className="book-content-inner">
+          <div className="book-content relative">
+            <div ref={contentRef} className="book-content-inner">
               {loading ? (
                 <div className="flex items-center justify-center h-full">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
@@ -152,6 +167,23 @@ export default function BookPage({ params }: BookPageProps) {
                   </div>
                 ))
               )}
+            </div>
+            {/* Chapter Navigation */}
+            <div className="chapter-nav fixed right-8 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm rounded-lg p-2 shadow-lg">
+              <div className="flex flex-col gap-1">
+                {Array.from({ length: project.chapters }, (_, i) => i + 1).map((chapter) => (
+                  <button
+                    key={chapter}
+                    onClick={() => scrollToChapter(chapter)}
+                    className={`w-8 h-8 flex items-center justify-center rounded-md text-sm transition-colors
+                      ${currentChapter === chapter 
+                        ? 'bg-blue-600 text-white' 
+                        : 'hover:bg-gray-100 text-gray-600'}`}
+                  >
+                    {chapter}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>

@@ -315,6 +315,27 @@ body.book-page-active > .project.on {
     height: calc(100% + 2.6vw);
 }
 
+.flex-col {
+    flex-direction: column;
+}
+
+.chapter-nav {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+    height: 82vh;
+    margin-left: 20px;
+    /* overflow: auto; */
+    position: fixed;
+    right: 1.5vw;
+    top: 6.6vw;
+    font-size: 12px;
+    padding: 7px;
+    border: 1px solid rgba(0, 0, 0, .3);
+    border-radius: 7px;
+}
+
 .book-content-inner {
     width: 100%;
     padding-bottom: 50vh;
