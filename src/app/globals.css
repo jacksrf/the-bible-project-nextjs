@@ -567,7 +567,7 @@ div#smooth-wrapper {
     position: absolute;
     top: calc(50% - 12vw);
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 0%);
 }
 
 .mwg_effect002 .card .medias {
