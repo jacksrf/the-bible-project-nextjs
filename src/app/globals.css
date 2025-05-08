@@ -313,6 +313,13 @@ body.book-page-active > .project.on {
     overflow: scroll;
     margin-top: -1.3vw;
     height: calc(100% + 2.6vw);
+    position: relative;
+}
+
+div#smooth-wrapper {
+    position: absolute!important;
+    overflow: hidden;
+    padding: 0px 6vw 0px 5vw;
 }
 
 .flex-col {
@@ -334,6 +341,7 @@ body.book-page-active > .project.on {
     padding: 7px;
     border: 1px solid rgba(0, 0, 0, .3);
     border-radius: 7px;
+    opacity: 0;
 }
 
 .book-content-inner {
@@ -356,6 +364,28 @@ body.book-page-active > .project.on {
     width: 100%;
     white-space: normal;
     margin-bottom: 20px !important;
+}
+
+.chapter-nav > div {
+    position: relative;
+}
+
+.chapter_marker {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  border: 1px solid black;
+  height: 20px;
+  width: 20px;
+  border-radius: 5px;
+}
+
+.chapter-nav button {
+    display: flex
+;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
 @media (max-width: 768px) {
