@@ -86,15 +86,13 @@ export default function Home() {
     const card = cardRef.current
     const W = window.innerWidth
     const H = window.innerHeight
-    const cardWidth = card.offsetWidth
-    const cardHeight = card.offsetHeight
 
-    console.log(W, H, cardWidth, cardHeight)
+    console.log(W, H)
 
-    // Set initial position to center, accounting for card dimensions
+    // Set initial position to center using transform equivalent
     gsap.set(card, {
-      x: '-50%',
-      y: '0%'
+      xPercent: -50,
+      yPercent: 0
     })
   }, [showContent])
 
